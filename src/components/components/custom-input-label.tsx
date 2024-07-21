@@ -8,7 +8,7 @@ export function CustomInputLabel({ children, ...props }: Props) {
     <InputLabel
       {...props}
       style={{
-        fontSize: text.textL,
+        fontSize: text.textSm,
         color: colors.textBlue,
       }}
     >

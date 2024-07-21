@@ -8,8 +8,8 @@ export const colors = {
   border: "#D1DBE8",
 };
 export const text = {
-  titleEL: "32px",
-  textL: "18px",
+  titleLg: "32px",
+  textLg: "18px",
   textMd: "16px",
   textSm: "14px",
 };

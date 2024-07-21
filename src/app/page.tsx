@@ -1,4 +1,4 @@
-import Login from "@/components/auth/login";
+import UsersTable from "@/components/table";
 export default function Home() {
-  return <Login></Login>;
+  return <UsersTable></UsersTable>;
 }
