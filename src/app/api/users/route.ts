@@ -1,11 +1,11 @@
 import { CustomNextApiRequest } from "@/types/api";
 import { NextResponse } from "next/server";
-import { register } from "@/controllers/auth/register";
+import { users } from "@/controllers/users";
 
 import router from "@/lib/api/base-router";
 
-router.post(register);
+router.get(users);
 
-export async function POST(request: CustomNextApiRequest, ctx: NextResponse) {
+export async function GET(request: CustomNextApiRequest, ctx: NextResponse) {
   return router.run(request, ctx);
 }

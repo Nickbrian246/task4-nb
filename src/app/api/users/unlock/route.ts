@@ -1,11 +1,11 @@
 import { CustomNextApiRequest } from "@/types/api";
 import { NextResponse } from "next/server";
-import { register } from "@/controllers/auth/register";
+import { unlockUsers } from "@/controllers/users";
 
 import router from "@/lib/api/base-router";
 
-router.post(register);
+router.patch(unlockUsers);
 
-export async function POST(request: CustomNextApiRequest, ctx: NextResponse) {
+export async function PATCH(request: CustomNextApiRequest, ctx: NextResponse) {
   return router.run(request, ctx);
 }
