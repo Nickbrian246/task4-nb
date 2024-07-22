@@ -6,16 +6,20 @@ import {
   CustomText,
   CustomTextField,
 } from "@/components/components";
+import { colors } from "@/constants";
 import { Box, List, ListItem, ListItemText } from "@mui/material";
 
 export default function Login() {
   return (
     <Box
       sx={{
-        maxWidth: "600px",
+        minWidth: "400px",
         display: "flex",
         flexDirection: "column",
         gap: "10px",
+        border: `2px solid ${colors.border}`,
+        borderRadius: "10px",
+        padding: "50px",
       }}
     >
       <CustomText
