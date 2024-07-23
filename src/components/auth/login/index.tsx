@@ -12,15 +12,16 @@ import { colors } from "@/constants";
 import { ApiFailureResponse } from "@/types/api";
 import { UserLoginType, LoginUserSchema } from "@/validations/auth";
 import { Box, FormHelperText } from "@mui/material";
-import { ChangeEvent, FormEventHandler, useState } from "react";
+import { ChangeEvent, FormEventHandler, useState, useContext } from "react";
 import { ZodError } from "zod";
 import { loginUser } from "./services";
-
+import { useAuthUserContext } from "@/hooks/auth-user-context/use-auth-user-context";
 export default function Login() {
   const [hidePassword, setHidePassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ZodError | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { logUser } = useAuthUserContext();
   const [userData, setUserData] = useState<UserLoginType>({
     email: "",
     password: "",
@@ -51,9 +52,7 @@ export default function Login() {
     try {
       const data = LoginUserSchema.parse(userData);
       const res = await loginUser(data);
-
-      localStorage.setItem("access_token", res.medaData.access_token);
-      localStorage.setItem("user-name", res.data.userName);
+      logUser(res.data.userName, res.medaData.access_token);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

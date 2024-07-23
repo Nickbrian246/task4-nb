@@ -18,10 +18,12 @@ import { FormEventHandler, useState } from "react";
 import { ZodError } from "zod";
 import { registerUser } from "./services";
 import { fields } from "./utils/fields";
+import { useAuthUserContext } from "@/hooks/auth-user-context/use-auth-user-context";
 
 export default function Register() {
   const [isHidePassword, setIsHidePassword] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { logUser } = useAuthUserContext();
   const { hasMinLength, isDirty, validatePassword, setIsDirty } =
     usePasswordRules();
   const [errors, setErrors] = useState<ZodError | null>(null);
@@ -59,10 +61,7 @@ export default function Register() {
     try {
       const user = RegisterUserSchema.parse(userData);
       const res = await registerUser(user);
-
-      localStorage.setItem("access_token", res.medaData.access_token);
-      localStorage.setItem("user-name", res.data.userName);
-
+      logUser(res.data.userName, res.medaData.access_token);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

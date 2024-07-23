@@ -11,19 +11,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <section>
-      <Header />
-      <section
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: "90vh",
-        }}
-      >
-        {children}
-      </section>
+    <section
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "90vh",
+      }}
+    >
+      {children}
     </section>
   );
 }

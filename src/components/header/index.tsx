@@ -6,8 +6,8 @@ import ComputerIcon from "@mui/icons-material/Computer";
 import Link from "next/link";
 export function Header() {
   return (
-    <Box
-      sx={{
+    <header
+      style={{
         display: "flex",
         justifyContent: "space-between",
         padding: "5px",
@@ -35,6 +35,6 @@ export function Header() {
           </ListItem>
         ))}
       </List>
-    </Box>
+    </header>
   );
 }
