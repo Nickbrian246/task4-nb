@@ -1,4 +1,4 @@
-import { RegisterUserType } from "@/validations/auth";
+import { UserLoginType } from "@/validations/auth";
 import {
   ApiAuthUserSuccess,
   ApiAuthUserSuccessMetaData,
@@ -7,13 +7,13 @@ import {
 } from "@/types/api";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export async function registerUser(
-  userData: RegisterUserType
+export async function loginUser(
+  userData: UserLoginType
 ): Promise<
   ApiSuccessResponseWithMetadata<ApiAuthUserSuccess, ApiAuthUserSuccessMetaData>
 > {
   try {
-    const req = await fetch(`${BASE_URL}/auth/register`, {
+    const req = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

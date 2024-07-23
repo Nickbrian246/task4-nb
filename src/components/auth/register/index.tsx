@@ -1,24 +1,23 @@
 "use client";
 import {
   CustomButton,
+  CustomCircularLoading,
   CustomInputLabel,
   CustomLink,
+  CustomPasswordField,
   CustomText,
   CustomTextField,
   PasswordRules,
-  CustomPasswordField,
-  CustomCircularLoading,
 } from "@/components/components";
 import { colors } from "@/constants";
 import { usePasswordRules } from "@/hooks/password/password-rules";
+import { ApiFailureResponse } from "@/types/api";
 import { RegisterUserSchema, RegisterUserType } from "@/validations/auth";
 import { Box, FormHelperText } from "@mui/material";
 import { FormEventHandler, useState } from "react";
-import { fields } from "./utils/fields";
 import { ZodError } from "zod";
 import { registerUser } from "./services";
-import { ApiFailureResponse } from "@/types/api";
-import CircularProgress from "@mui/material/CircularProgress";
+import { fields } from "./utils/fields";
 
 export default function Register() {
   const [isHidePassword, setIsHidePassword] = useState(false);
@@ -69,9 +68,10 @@ export default function Register() {
       setIsLoading(false);
       if (error instanceof ZodError) {
         setErrors(error);
+      } else {
+        const err = error as ApiFailureResponse;
+        setErrorMessage(err.message);
       }
-      const err = error as ApiFailureResponse;
-      setErrorMessage(err.message);
     }
   };
   return (

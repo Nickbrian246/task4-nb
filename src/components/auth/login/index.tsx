@@ -5,11 +5,66 @@ import {
   CustomLink,
   CustomText,
   CustomTextField,
+  CustomPasswordField,
+  CustomCircularLoading,
 } from "@/components/components";
 import { colors } from "@/constants";
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import { ApiFailureResponse } from "@/types/api";
+import { UserLoginType, LoginUserSchema } from "@/validations/auth";
+import { Box, FormHelperText } from "@mui/material";
+import { ChangeEvent, FormEventHandler, useState } from "react";
+import { ZodError } from "zod";
+import { loginUser } from "./services";
 
 export default function Login() {
+  const [hidePassword, setHidePassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<ZodError | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserLoginType>({
+    email: "",
+    password: "",
+  });
+
+  const handleClickShowPassword = () => setHidePassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleUserData = (e: ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setUserData((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const data = LoginUserSchema.parse(userData);
+      const res = await loginUser(data);
+
+      localStorage.setItem("access_token", res.medaData.access_token);
+      localStorage.setItem("user-name", res.data.userName);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      if (error instanceof ZodError) {
+        setErrors(error);
+      } else {
+        const err = error as ApiFailureResponse;
+        setErrorMessage(err.message);
+      }
+    }
+  };
   return (
     <Box
       sx={{
@@ -29,22 +84,89 @@ export default function Login() {
       >
         Log in to your account
       </CustomText>
-      <form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {errorMessage && (
+        <CustomText textAlign="center" textSize="textSm" textColor="redAlert">
+          {errorMessage}
+        </CustomText>
+      )}
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          position: "relative",
+        }}
+      >
         <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
           <CustomInputLabel htmlFor="EmailField">Email</CustomInputLabel>
-          <CustomTextField id="EmailField" placeholder="example@example.com" />
+          <CustomTextField
+            onChange={handleUserData}
+            name="email"
+            id="EmailField"
+            placeholder="example@example.com"
+          />
+          {errors &&
+            errors.issues
+              .filter((err) => err.path[0] === "email")
+              .map((e) => (
+                <FormHelperText
+                  key={e.message}
+                  id={e.message}
+                  sx={{
+                    color: colors.redAlert,
+                    fontSize: "12px",
+                    margin: "0",
+                  }}
+                >
+                  {e.message}
+                </FormHelperText>
+              ))}
         </Box>
         <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
           <CustomInputLabel htmlFor="passwordField">Password</CustomInputLabel>
-          <CustomTextField id="passwordField" placeholder="Password" />
+          <CustomPasswordField
+            onChange={handleUserData}
+            name="password"
+            handleOnMouseDown={handleMouseDownPassword}
+            handleShowPassword={handleClickShowPassword}
+            hidePassword={hidePassword}
+            id="passwordField"
+            placeholder="Password"
+          />
+          {errors &&
+            errors.issues
+              .filter((err) => err.path[0] === "password")
+              .map((e) => (
+                <FormHelperText
+                  key={e.message}
+                  id={e.message}
+                  sx={{
+                    color: colors.redAlert,
+                    fontSize: "12px",
+                    margin: "0",
+                  }}
+                >
+                  {e.message}
+                </FormHelperText>
+              ))}
         </Box>
 
-        <CustomButton variant="contained" textSize="textSm">
+        <CustomButton
+          type="submit"
+          disabled={
+            !(userData.email.length > 3 && userData.password.length >= 1)
+          }
+          variant="contained"
+          textSize="textSm"
+        >
           Log in
         </CustomButton>
+        {isLoading && <CustomCircularLoading />}
       </form>
-      <CustomLink href={"/"}>Don&apos;t have an account?</CustomLink>
-      <CustomLink href="/">Forgot your password?</CustomLink>
+      <CustomLink href={"/auth/register"}>
+        Don&apos;t have an account?
+      </CustomLink>
     </Box>
   );
 }

@@ -15,7 +15,7 @@ export function PasswordRules({ hasMinLength, isDirty }: Props) {
             isDirty ? (hasMinLength ? "greenSuccess" : "redAlert") : "textBlue"
           }
         >
-          * at least 1 character in password{" "}
+          * Password must contain at least one character.{" "}
         </CustomText>
         {hasMinLength && <CheckCircleOutlineIcon color="success" />}
       </ListItem>

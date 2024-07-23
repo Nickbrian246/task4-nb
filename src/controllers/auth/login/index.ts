@@ -2,17 +2,9 @@ import { LoginUserSchema } from "@/validations/auth";
 import { verify } from "argon2";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
-import prisma from "../../../prisma";
+import prisma from "../../../../prisma";
 import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
-
-interface AuthUserResponse {
-  name: string;
-}
-
-interface MetaData {
-  access_token: string;
-}
 
 const SECRET = process.env.SECRET_KEY as string;
 
@@ -26,7 +18,12 @@ export const login = async (req: Request) => {
 
     const verifyPassword = await verify(user.password, password);
     if (!verifyPassword)
-      return NextResponse.json({ message: "wrong password" }, { status: 400 });
+      return NextResponse.json(
+        {
+          message: `The password entered for ${email} is incorrect.`,
+        },
+        { status: 400 }
+      );
 
     const jwt = sign({ id: user.id, status: user.status }, SECRET);
 
