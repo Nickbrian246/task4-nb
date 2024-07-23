@@ -6,24 +6,33 @@ import {
   CustomText,
   CustomTextField,
   PasswordRules,
+  CustomPasswordField,
+  CustomCircularLoading,
 } from "@/components/components";
 import { colors } from "@/constants";
 import { usePasswordRules } from "@/hooks/password/password-rules";
-import { RegisterUserType } from "@/validations/auth";
-import { Box } from "@mui/material";
-import { useState } from "react";
+import { RegisterUserSchema, RegisterUserType } from "@/validations/auth";
+import { Box, FormHelperText } from "@mui/material";
+import { FormEventHandler, useState } from "react";
 import { fields } from "./utils/fields";
+import { ZodError } from "zod";
+import { registerUser } from "./services";
+import { ApiFailureResponse } from "@/types/api";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Register() {
+  const [isHidePassword, setIsHidePassword] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { hasMinLength, isDirty, validatePassword, setIsDirty } =
+    usePasswordRules();
+  const [errors, setErrors] = useState<ZodError | null>(null);
   const [userData, setUserData] = useState<RegisterUserType>({
     email: "",
     name: "",
     password: "",
     position: "",
   });
-  const [isHidePassword, setIsHidePassword] = useState(false);
-  const { hasMinLength, isDirty, validatePassword, setIsDirty } =
-    usePasswordRules();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name.toLowerCase();
@@ -36,16 +45,45 @@ export default function Register() {
       };
     });
   };
+
+  const handleClickShowPassword = () => setIsHidePassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const user = RegisterUserSchema.parse(userData);
+      const res = await registerUser(user);
+
+      localStorage.setItem("access_token", res.medaData.access_token);
+      localStorage.setItem("user-name", res.data.userName);
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      if (error instanceof ZodError) {
+        setErrors(error);
+      }
+      const err = error as ApiFailureResponse;
+      setErrorMessage(err.message);
+    }
+  };
   return (
     <Box
       sx={{
         minWidth: "400px",
         display: "flex",
         flexDirection: "column",
-        gap: "10px",
+        gap: "5px",
         border: `2px solid ${colors.border}`,
         borderRadius: "10px",
-        padding: "50px",
+        padding: "40px",
       }}
     >
       <CustomText
@@ -55,7 +93,20 @@ export default function Register() {
       >
         Register
       </CustomText>
-      <form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {errorMessage && (
+        <CustomText textAlign="center" textSize="textSm" textColor="redAlert">
+          {errorMessage}
+        </CustomText>
+      )}
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px",
+          position: "relative",
+        }}
+      >
         {fields.map((field) => (
           <Box
             key={field.htmlFor}
@@ -65,6 +116,8 @@ export default function Register() {
               {field.name}
             </CustomInputLabel>
             <CustomTextField
+              required={true}
+              type={field.htmlFor === "Email" ? "email" : "text"}
               onChange={handleInput}
               value={
                 userData[
@@ -75,11 +128,31 @@ export default function Register() {
               id={field.htmlFor}
               placeholder={field.placeholder}
             />
+
+            {errors &&
+              errors.issues
+                .filter((err) => err.path[0] === field.name.toLowerCase())
+                .map((e) => (
+                  <FormHelperText
+                    key={e.message}
+                    id={field.htmlFor}
+                    sx={{
+                      color: colors.redAlert,
+                      fontSize: "12px",
+                      margin: "0",
+                    }}
+                  >
+                    {e.message}
+                  </FormHelperText>
+                ))}
           </Box>
         ))}
         <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
           <CustomInputLabel htmlFor="passwordField">Password</CustomInputLabel>
-          <CustomTextField
+          <CustomPasswordField
+            handleOnMouseDown={handleMouseDownPassword}
+            hidePassword={isHidePassword}
+            handleShowPassword={handleClickShowPassword}
             onFocus={() => {
               validatePassword(userData["password"] as string);
               setIsDirty(true);
@@ -94,14 +167,16 @@ export default function Register() {
         </Box>
 
         <CustomButton
+          type="submit"
           disabled={!hasMinLength}
           variant="contained"
           textSize="textSm"
         >
           Register
         </CustomButton>
+        {isLoading && <CustomCircularLoading />}
       </form>
-      <CustomLink href={"/"}>have an account?</CustomLink>
+      <CustomLink href={"/auth/login"}>have an account?</CustomLink>
     </Box>
   );
 }

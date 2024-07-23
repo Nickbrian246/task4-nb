@@ -2,7 +2,7 @@ import { colors } from "@/constants";
 import { TextField } from "@mui/material";
 import React from "react";
 
-type CustomTextFieldProps = React.ComponentProps<typeof TextField>;
+export type CustomTextFieldProps = React.ComponentProps<typeof TextField>;
 
 const CustomTextField: React.FC<CustomTextFieldProps> = (props) => {
   return (

@@ -1,4 +1,4 @@
 import UsersTable from "@/components/table";
-export function Home() {
+export default function Home() {
   return <UsersTable />;
 }

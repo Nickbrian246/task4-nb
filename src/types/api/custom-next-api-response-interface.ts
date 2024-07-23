@@ -6,5 +6,5 @@ export interface CustomNextApiResponse<Response>
 
 export interface ApiSuccessResponseWithMetadata<T, V> {
   data: T;
-  metadata: V;
+  medaData: V;
 }

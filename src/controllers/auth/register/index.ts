@@ -2,7 +2,7 @@ import { RegisterUserSchema } from "@/validations/auth";
 import { hash } from "argon2";
 import { sign } from "jsonwebtoken";
 import { NextResponse } from "next/server";
-import prisma from "../../../prisma";
+import prisma from "../../../../prisma";
 import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 
@@ -34,14 +34,26 @@ export const register = async (req: Request) => {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002")
-        return NextResponse.json({ message: `This email already exist ` });
-      return NextResponse.json({ message: `${error.message}` });
+        return NextResponse.json(
+          { message: `This email is already registered.` },
+          { status: 400 }
+        );
+      return NextResponse.json(
+        { message: `${error.message}` },
+        { status: 400 }
+      );
     }
     if (error instanceof ZodError) {
-      return NextResponse.json({ message: `${error.message}` });
+      return NextResponse.json(
+        { message: `${error.message}` },
+        { status: 400 }
+      );
     }
-    return NextResponse.json({
-      message: `something went wrong please contact support`,
-    });
+    return NextResponse.json(
+      {
+        message: `something went wrong please contact support`,
+      },
+      { status: 400 }
+    );
   }
 };
