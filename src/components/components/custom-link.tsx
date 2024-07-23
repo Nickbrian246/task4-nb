@@ -12,6 +12,7 @@ export function CustomLink({ href, children, ...props }: Props) {
       style={{
         textDecoration: "none",
         alignSelf: "center",
+        marginTop: "10px",
       }}
       {...props}
     >

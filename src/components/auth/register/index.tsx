@@ -175,7 +175,7 @@ export default function Register() {
         </CustomButton>
         {isLoading && <CustomCircularLoading />}
       </form>
-      <CustomLink href={"/auth/login"}>have an account?</CustomLink>
+      <CustomLink href={"/auth/login"}>have an account? Log in</CustomLink>
     </Box>
   );
 }

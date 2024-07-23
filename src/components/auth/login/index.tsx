@@ -164,7 +164,7 @@ export default function Login() {
         {isLoading && <CustomCircularLoading />}
       </form>
       <CustomLink href={"/auth/register"}>
-        Don&apos;t have an account?
+        Don&apos;t have an account? Register
       </CustomLink>
     </Box>
   );
