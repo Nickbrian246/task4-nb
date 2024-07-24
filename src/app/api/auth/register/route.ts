@@ -6,6 +6,10 @@ import router from "@/lib/api/base-router";
 
 router.post(register);
 
-export async function POST(request: CustomNextApiRequest, ctx: NextResponse) {
+export async function POST(
+  request: CustomNextApiRequest,
+  ctx: NextResponse
+): Promise<NextResponse> {
+  //@ts-ignore
   return router.run(request, ctx);
 }

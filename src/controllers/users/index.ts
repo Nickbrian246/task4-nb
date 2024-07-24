@@ -3,7 +3,7 @@ import { groupOfUsersSchema } from "@/validations/users";
 import { NextResponse } from "next/server";
 import prisma from "../../../prisma";
 
-export const users = async () => {
+export const users = async (): Promise<NextResponse> => {
   const users = await prisma.user.findMany();
   const data = users.map((user) => {
     return {
@@ -17,7 +17,7 @@ export const users = async () => {
   });
 };
 
-export const deleteUsers = async (req: Request) => {
+export const deleteUsers = async (req: Request): Promise<NextResponse> => {
   const body = await req.json();
   const { users } = groupOfUsersSchema.parse(body);
 
@@ -39,7 +39,7 @@ export const deleteUsers = async (req: Request) => {
   );
 };
 
-export const blockUsers = async (req: Request) => {
+export const blockUsers = async (req: Request): Promise<NextResponse> => {
   const body = await req.json();
   const { users } = groupOfUsersSchema.parse(body);
 
@@ -65,7 +65,7 @@ export const blockUsers = async (req: Request) => {
   );
 };
 
-export const unlockUsers = async (req: Request) => {
+export const unlockUsers = async (req: Request): Promise<NextResponse> => {
   const body = await req.json();
   const { users } = groupOfUsersSchema.parse(body);
 

@@ -1,12 +1,11 @@
 import { LoginUserSchema } from "@/validations/auth";
 import { verify } from "argon2";
 import { sign } from "jsonwebtoken";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma";
-
 const SECRET = process.env.SECRET_KEY as string;
 
-export const login = async (req: Request) => {
+export const login = async (req: NextRequest): Promise<NextResponse> => {
   const userData = await req.json();
   const { email, password } = LoginUserSchema.parse(userData);
 

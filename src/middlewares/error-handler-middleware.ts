@@ -1,10 +1,10 @@
 import { NextHandler } from "next-connect";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 const errorHandlerMiddleware = async (
-  req: Request,
-  event: any,
+  req: NextRequest,
+  params: unknown,
   next: NextHandler
 ) => {
   try {

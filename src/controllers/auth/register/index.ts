@@ -6,7 +6,7 @@ import prisma from "../../../../prisma";
 
 const SECRET = process.env.SECRET_KEY as string;
 
-export const register = async (req: Request) => {
+export const register = async (req: Request): Promise<NextResponse> => {
   const userData = await req.json();
   const user = RegisterUserSchema.parse(userData);
 

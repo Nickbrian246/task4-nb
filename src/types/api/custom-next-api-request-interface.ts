@@ -1,7 +1,6 @@
-import { NextApiRequest } from "next";
 import { Status } from "@prisma/client";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-export interface DecodedUser {
+import { NextRequest } from "next/server";
+interface DecodedUser {
   id: string;
   status: Status;
 }
