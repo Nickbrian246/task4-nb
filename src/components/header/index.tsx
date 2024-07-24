@@ -2,14 +2,26 @@
 import { Box, Button, List, ListItem } from "@mui/material";
 import { colors } from "@/constants";
 import { CustomText } from "../components";
-import { navListNoUser, navListWithUser } from "./utils/nav-list";
+import { navListNoUser } from "./utils/nav-list";
 import ComputerIcon from "@mui/icons-material/Computer";
 import Link from "next/link";
 import { useAuthUserContext } from "@/hooks/auth-user-context/use-auth-user-context";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DialogActionStatus from "../table/components/user-actions-buttons/dialog-action-status";
+import { useGlobalWarningContext } from "@/hooks/global-warning-context/global-warning-context";
+import { useEffect } from "react";
 
 export function Header() {
   const { isUserLoggedIn, logOutUser, getUserName } = useAuthUserContext();
+  const { isActive, globalWarning, desActiveGlobalWarning } =
+    useGlobalWarningContext();
+
+  useEffect(() => {
+    if (isActive)
+      setTimeout(() => {
+        desActiveGlobalWarning();
+      }, 4000);
+  }, [isActive, desActiveGlobalWarning]);
 
   return (
     <header
@@ -19,8 +31,16 @@ export function Header() {
         padding: "5px",
         borderBottom: `1px solid ${colors.border}`,
         maxHeight: "50px",
+        position: "relative",
       }}
     >
+      <DialogActionStatus
+        sx={{ bottom: "-100px" }}
+        isOpen={isActive}
+        message={globalWarning.message}
+        close={() => {}}
+        severity={globalWarning.severity}
+      />
       <Box
         sx={{
           display: "flex",

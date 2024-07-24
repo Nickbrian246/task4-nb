@@ -1,9 +1,7 @@
+import { deleteUsers, users } from "@/controllers/users";
+import router from "@/lib/api/base-auth-router";
 import { CustomNextApiRequest } from "@/types/api";
 import { NextResponse } from "next/server";
-import { users, deleteUsers } from "@/controllers/users";
-
-import router from "@/lib/api/base-router";
-
 router.get(users);
 router.delete(deleteUsers);
 

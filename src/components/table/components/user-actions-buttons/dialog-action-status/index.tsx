@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, SxProps } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { colors } from "@/constants";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -16,6 +16,7 @@ interface Props {
   duration?: number;
   isOpen: boolean;
   close: () => void;
+  sx?: SxProps;
 }
 
 export default function DialogActionStatus({
@@ -24,6 +25,7 @@ export default function DialogActionStatus({
   severity,
   close,
   isOpen,
+  sx,
 }: Props) {
   useEffect(() => {
     const delay = duration ?? 1300;
@@ -45,6 +47,7 @@ export default function DialogActionStatus({
             justifyContent: "center",
             alignItems: "center",
             zIndex: "4",
+            ...sx,
           }}
         >
           <Box

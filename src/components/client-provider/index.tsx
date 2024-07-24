@@ -1,6 +1,7 @@
 "use client";
 import { Header } from "../header";
 import { AuthProvider } from "@/context/auth/auth";
+import { GlobalWarningProvider } from "@/context/global-warning/global-warning";
 
 export default function ClientProvider({
   children,
@@ -9,10 +10,12 @@ export default function ClientProvider({
 }>) {
   return (
     <AuthProvider>
-      <section>
-        <Header />
-        {children}
-      </section>
+      <GlobalWarningProvider>
+        <section>
+          <Header />
+          {children}
+        </section>
+      </GlobalWarningProvider>
     </AuthProvider>
   );
 }

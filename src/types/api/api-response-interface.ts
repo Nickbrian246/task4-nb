@@ -1,3 +1,4 @@
+import { Status } from "@prisma/client";
 import { ZodIssue } from "zod";
 export interface ApiFailureResponse {
   message: string;
@@ -9,4 +10,9 @@ export interface ApiAuthUserSuccess {
 }
 export interface ApiAuthUserSuccessMetaData {
   access_token: string;
+}
+
+export interface DecodedUser {
+  id: string;
+  status: Status;
 }

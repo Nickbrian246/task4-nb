@@ -49,6 +49,7 @@ export default function UserActionButtons({
     } catch (error) {
       const err = error as ApiFailureResponse;
       setOpenActionStatusDialog(true);
+      setIsLoadingAction(false);
       setDialogProps({
         message: err.message,
         severity: "error",
@@ -75,6 +76,7 @@ export default function UserActionButtons({
         .catch((err) => {
           const error = err as ApiFailureResponse;
           setOpenActionStatusDialog(true);
+          setIsLoadingAction(false);
           setDialogProps({
             message: error.message,
             severity: "error",
@@ -104,6 +106,7 @@ export default function UserActionButtons({
         .catch((err) => {
           const error = err as ApiFailureResponse;
           setOpenActionStatusDialog(true);
+          setIsLoadingAction(false);
           setDialogProps({
             message: error.message,
             severity: "error",

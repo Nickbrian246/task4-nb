@@ -9,6 +9,8 @@ import GridSkeleton from "@/components/skeletons/grid-skeleton";
 import DialogActionStatus from "@/components/table/components/user-actions-buttons/dialog-action-status";
 import { DialogProps } from "@/components/table/components/user-actions-buttons/dialog-action-status";
 import { useRouter } from "next/navigation";
+import { ApiFailureResponse } from "@/types/api";
+import { useGlobalWarningContext } from "@/hooks/global-warning-context/global-warning-context";
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
@@ -18,6 +20,7 @@ export default function Home() {
   const [openActionStatusDialog, setOpenActionStatusDialog] =
     useState<boolean>(false);
   const router = useRouter();
+  const { activeGlobalWarning } = useGlobalWarningContext();
   const [dialogProps, setDialogProps] = useState<DialogProps>({
     message: "",
     severity: "success",
@@ -30,10 +33,17 @@ export default function Home() {
     if (!token && !name) return router.replace("/auth/login");
     if (token)
       getUsers(token)
-        .then((res) => res)
-        .then((res) => setUsers(res.data))
-        .finally(() => setIsFetchingUsers(false));
-  }, [router]);
+        .then((res) => {
+          setUsers(res.data);
+          setIsFetchingUsers(false);
+        })
+        .catch((err) => {
+          setIsFetchingUsers(true);
+          const error = err as ApiFailureResponse;
+          activeGlobalWarning(error.message, "error");
+          router.replace("/auth/login");
+        });
+  }, []);
 
   const handleSelectionChange = (newSelection: any) => {
     setSelectedRows(newSelection);
