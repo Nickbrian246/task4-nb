@@ -9,6 +9,8 @@ import { blockUsers, deleteUsers, unLockUsers } from "./services";
 import { DialogProps } from "./dialog-action-status";
 import { ApiFailureResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
+import { useAuthUserContext } from "@/hooks/auth-user-context/use-auth-user-context";
+import { useGlobalWarningContext } from "@/hooks/global-warning-context/global-warning-context";
 interface Props {
   isDisable: boolean;
   setUsers: React.Dispatch<SetStateAction<User[]>>;
@@ -29,6 +31,8 @@ export default function UserActionButtons({
   setOpenActionStatusDialog,
 }: Props) {
   const router = useRouter();
+  const { logOutUser } = useAuthUserContext();
+  const { activeGlobalWarning } = useGlobalWarningContext();
 
   const handleBlockUsers = async () => {
     try {
@@ -48,6 +52,15 @@ export default function UserActionButtons({
       setIsLoadingAction(false);
     } catch (error) {
       const err = error as ApiFailureResponse;
+      if (err.message === "UserBlocked") {
+        activeGlobalWarning(
+          "You are not authorized to perform this action because your account is blocked.",
+          "error"
+        );
+
+        logOutUser();
+        return router.replace("/auth/login");
+      }
       setOpenActionStatusDialog(true);
       setIsLoadingAction(false);
       setDialogProps({
@@ -75,6 +88,14 @@ export default function UserActionButtons({
         })
         .catch((err) => {
           const error = err as ApiFailureResponse;
+          if (err.message === "UserBlocked") {
+            activeGlobalWarning(
+              "You are not authorized to perform this action because your account is blocked.",
+              "error"
+            );
+            logOutUser();
+            return router.replace("/auth/login");
+          }
           setOpenActionStatusDialog(true);
           setIsLoadingAction(false);
           setDialogProps({
@@ -105,6 +126,14 @@ export default function UserActionButtons({
         })
         .catch((err) => {
           const error = err as ApiFailureResponse;
+          if (err.message === "UserBlocked") {
+            activeGlobalWarning(
+              "You are not authorized to perform this action because your account is blocked.",
+              "error"
+            );
+            logOutUser();
+            return router.replace("/auth/login");
+          }
           setOpenActionStatusDialog(true);
           setIsLoadingAction(false);
           setDialogProps({

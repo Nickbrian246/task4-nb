@@ -12,6 +12,9 @@ enum Status {
   ACTIVE
 }
 
+enum Role {
+  ADMIN
+}
 
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -20,6 +23,7 @@ model User {
   password  String
   position  String
   status    Status    @default(ACTIVE)
+  role      Role       @default(ADMIN)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

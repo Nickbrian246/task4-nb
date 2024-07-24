@@ -16,15 +16,12 @@ const authMiddleware = async (req: Request, event: any, next: NextHandler) => {
 
     const jwt = token.split(" ").pop() as string;
     const { id } = verify(jwt, SECRET) as DecodedUser;
-    const { status, name } = await prisma.user.findFirstOrThrow({
+    const { status } = await prisma.user.findFirstOrThrow({
       where: { id },
     });
 
     if (status === "BLOCKED")
-      return NextResponse.json(
-        { message: "No authorization" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "UserBlocked" }, { status: 400 });
 
     return await next();
   } catch (error) {
