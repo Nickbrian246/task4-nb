@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
+
 export type AuthContextType = {
   logUser: (name: string, access_token: string) => void;
   logOutUser: () => void;

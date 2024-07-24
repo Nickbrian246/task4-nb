@@ -3,10 +3,18 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { groupOfUsersSchema } from "@/validations/users";
 import prisma from "../../../prisma";
+import { formatDate } from "@/utils/date";
 
 export const users = async () => {
   try {
-    const data = await prisma.user.findMany();
+    const users = await prisma.user.findMany();
+    const data = users.map((user) => {
+      return {
+        ...user,
+        lastLogin: formatDate(user.lastLogin),
+      };
+    });
+
     return NextResponse.json({
       data,
     });
@@ -33,10 +41,16 @@ export const deleteUsers = async (req: Request) => {
     await prisma.user.deleteMany({
       where: { id: { in: users } },
     });
-
+    const groupOfUsers = await prisma.user.findMany();
+    const data = groupOfUsers.map((user) => {
+      return {
+        ...user,
+        lastLogin: formatDate(user.lastLogin),
+      };
+    });
     return NextResponse.json(
       {
-        data: "",
+        data,
       },
       { status: 200 }
     );
@@ -59,15 +73,25 @@ export const blockUsers = async (req: Request) => {
   try {
     const body = await req.json();
     const { users } = groupOfUsersSchema.parse(body);
+    console.log(users);
 
     await prisma.user.updateMany({
       where: { id: { in: users } },
       data: { status: "BLOCKED" },
     });
 
+    const groupOfUsers = await prisma.user.findMany();
+
+    const data = groupOfUsers.map((user) => {
+      return {
+        ...user,
+        lastLogin: formatDate(user.lastLogin),
+      };
+    });
+
     return NextResponse.json(
       {
-        data: "",
+        data,
       },
       { status: 200 }
     );
@@ -96,9 +120,17 @@ export const unlockUsers = async (req: Request) => {
       data: { status: "ACTIVE" },
     });
 
+    const groupOfUsers = await prisma.user.findMany();
+
+    const data = groupOfUsers.map((user) => {
+      return {
+        ...user,
+        lastLogin: formatDate(user.lastLogin),
+      };
+    });
     return NextResponse.json(
       {
-        data: "",
+        data,
       },
       { status: 200 }
     );
