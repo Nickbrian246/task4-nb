@@ -1,9 +1,8 @@
 import { LoginUserSchema } from "@/validations/auth";
 import { verify } from "argon2";
-import { sign } from "jsonwebtoken";
+import { signJwt } from "@/lib/jose";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma";
-const SECRET = process.env.SECRET_KEY as string;
 
 export const login = async (req: NextRequest): Promise<NextResponse> => {
   const userData = await req.json();
@@ -30,7 +29,7 @@ export const login = async (req: NextRequest): Promise<NextResponse> => {
       { status: 400 }
     );
 
-  const jwt = sign({ id: user.id, status: user.status }, SECRET);
+  const jwt = await signJwt({ id: user.id, status: user.status });
 
   return NextResponse.json({
     data: { userName: user.name },

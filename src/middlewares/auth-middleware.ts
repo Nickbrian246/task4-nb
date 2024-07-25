@@ -1,10 +1,7 @@
-import { DecodedUser } from "@/types/api";
-import { verify } from "jsonwebtoken";
-import { NextHandler } from "next-connect";
+import { verifyJwt } from "@/lib/jose";
 import { NextResponse } from "next/server";
-import prisma from "../../prisma";
-const SECRET = process.env.SECRET_KEY as string;
-const authMiddleware = async (req: Request, event: any, next: NextHandler) => {
+
+const authMiddleware = async (req: Request) => {
   try {
     const token = req.headers.get("Authorization");
 
@@ -15,15 +12,16 @@ const authMiddleware = async (req: Request, event: any, next: NextHandler) => {
       );
 
     const jwt = token.split(" ").pop() as string;
-    const { id } = verify(jwt, SECRET) as DecodedUser;
-    const { status } = await prisma.user.findFirstOrThrow({
-      where: { id },
+    const { id } = await verifyJwt(jwt);
+    const reqHeaders = new Headers(req.headers);
+
+    reqHeaders.set("user", id);
+
+    return NextResponse.next({
+      request: {
+        headers: reqHeaders,
+      },
     });
-
-    if (status === "BLOCKED")
-      return NextResponse.json({ message: "UserBlocked" }, { status: 400 });
-
-    return await next();
   } catch (error) {
     return NextResponse.json(
       { message: "something went wrong please contact support" },
