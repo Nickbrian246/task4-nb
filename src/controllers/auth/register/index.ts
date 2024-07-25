@@ -1,10 +1,9 @@
 import { RegisterUserSchema } from "@/validations/auth";
 import { hash } from "argon2";
-import { sign } from "jsonwebtoken";
+
 import { NextResponse } from "next/server";
 import prisma from "../../../../prisma";
-
-const SECRET = process.env.SECRET_KEY as string;
+import { signJwt } from "@/lib/jose";
 
 export const register = async (req: Request): Promise<NextResponse> => {
   const userData = await req.json();
@@ -15,7 +14,8 @@ export const register = async (req: Request): Promise<NextResponse> => {
     data: { ...user, password: hashedPassword },
   });
 
-  const jwt = sign({ id: createUser.id, status: createUser.status }, SECRET);
+  const jwt = await signJwt({ id: createUser.id, status: createUser.status });
+
   return NextResponse.json({
     data: { userName: createUser.name },
     medaData: { access_token: jwt },
