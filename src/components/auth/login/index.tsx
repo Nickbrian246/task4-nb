@@ -25,6 +25,7 @@ export default function Login() {
   const [userData, setUserData] = useState<UserLoginType>({
     email: "",
     password: "",
+    date: new Date(),
   });
 
   const handleClickShowPassword = () => setHidePassword((show) => !show);
