@@ -13,13 +13,7 @@ export const users = async (req: Request): Promise<NextResponse> => {
   if (status === "BLOCKED")
     return NextResponse.json({ message: "UserBlocked" }, { status: 400 });
 
-  const users = await prisma.user.findMany();
-  const data = users.map((user) => {
-    return {
-      ...user,
-      lastLogin: formatDate(user.lastLogin),
-    };
-  });
+  const data = await prisma.user.findMany();
 
   return NextResponse.json({
     data,
@@ -41,13 +35,8 @@ export const deleteUsers = async (req: Request): Promise<NextResponse> => {
   await prisma.user.deleteMany({
     where: { id: { in: users } },
   });
-  const groupOfUsers = await prisma.user.findMany();
-  const data = groupOfUsers.map((user) => {
-    return {
-      ...user,
-      lastLogin: formatDate(user.lastLogin),
-    };
-  });
+  const data = await prisma.user.findMany();
+
   return NextResponse.json(
     {
       data,
@@ -74,14 +63,7 @@ export const blockUsers = async (req: Request): Promise<NextResponse> => {
     data: { status: "BLOCKED" },
   });
 
-  const groupOfUsers = await prisma.user.findMany();
-
-  const data = groupOfUsers.map((user) => {
-    return {
-      ...user,
-      lastLogin: formatDate(user.lastLogin),
-    };
-  });
+  const data = await prisma.user.findMany();
 
   return NextResponse.json(
     {
@@ -107,14 +89,7 @@ export const unlockUsers = async (req: Request): Promise<NextResponse> => {
     data: { status: "ACTIVE" },
   });
 
-  const groupOfUsers = await prisma.user.findMany();
-
-  const data = groupOfUsers.map((user) => {
-    return {
-      ...user,
-      lastLogin: formatDate(user.lastLogin),
-    };
-  });
+  const data = await prisma.user.findMany();
 
   return NextResponse.json(
     {
