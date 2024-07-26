@@ -32,7 +32,9 @@ export default function Register() {
     name: "",
     password: "",
     position: "",
+    date: new Date(),
   });
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {

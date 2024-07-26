@@ -10,6 +10,7 @@ export const RegisterUserSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Password must contain at least 1 character(s) " }),
+  date: z.date(),
 });
 
 export const LoginUserSchema = z.object({
@@ -17,6 +18,7 @@ export const LoginUserSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Password must contain at least 1 character(s) " }),
+  date: z.date(),
 });
 
 export type RegisterUserType = z.infer<typeof RegisterUserSchema>;

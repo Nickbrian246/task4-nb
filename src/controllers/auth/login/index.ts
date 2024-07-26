@@ -6,10 +6,15 @@ import prisma from "../../../../prisma";
 
 export const login = async (req: NextRequest): Promise<NextResponse> => {
   const userData = await req.json();
-  const { email, password } = LoginUserSchema.parse(userData);
+  userData.date = new Date(userData.date);
+  const { email, password, date } = LoginUserSchema.parse(userData);
 
   const user = await prisma.user.findFirstOrThrow({
     where: { email },
+  });
+  await prisma.user.update({
+    where: { email },
+    data: { lastLogin: date },
   });
 
   if (user.status === "BLOCKED") {
@@ -20,6 +25,7 @@ export const login = async (req: NextRequest): Promise<NextResponse> => {
       { status: 400 }
     );
   }
+
   const verifyPassword = await compare(password, user.password);
 
   if (!verifyPassword)
