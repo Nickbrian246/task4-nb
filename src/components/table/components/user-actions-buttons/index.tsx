@@ -61,6 +61,14 @@ export default function UserActionButtons({
         logOutUser();
         return router.replace("/auth/login");
       }
+      if (err.message === "No User found") {
+        activeGlobalWarning(
+          "You are not authorized to perform this action because your account has been deleted.",
+          "error"
+        );
+        logOutUser();
+        return router.replace("/auth/register");
+      }
       setOpenActionStatusDialog(true);
       setIsLoadingAction(false);
       setDialogProps({
@@ -95,6 +103,14 @@ export default function UserActionButtons({
             );
             logOutUser();
             return router.replace("/auth/login");
+          }
+          if (err.message === "No User found") {
+            activeGlobalWarning(
+              "You are not authorized to perform this action because your account has been deleted.",
+              "error"
+            );
+            logOutUser();
+            return router.replace("/auth/register");
           }
           setOpenActionStatusDialog(true);
           setIsLoadingAction(false);
@@ -138,6 +154,14 @@ export default function UserActionButtons({
             );
             logOutUser();
             return router.replace("/auth/login");
+          }
+          if (err.message === "No User found") {
+            activeGlobalWarning(
+              "You are not authorized to perform this action because your account has been deleted.",
+              "error"
+            );
+            logOutUser();
+            return router.replace("/auth/register");
           }
           setOpenActionStatusDialog(true);
           setIsLoadingAction(false);
