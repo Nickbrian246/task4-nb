@@ -11,9 +11,11 @@ import { ApiFailureResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
 import { useAuthUserContext } from "@/hooks/auth-user-context/use-auth-user-context";
 import { useGlobalWarningContext } from "@/hooks/global-warning-context/global-warning-context";
+import { localUser } from "@/utils/date-adapter";
+import { usersDateAdapter } from "@/utils/date-adapter";
 interface Props {
   isDisable: boolean;
-  setUsers: React.Dispatch<SetStateAction<User[]>>;
+  setUsers: React.Dispatch<SetStateAction<localUser[]>>;
   usersSelected: any[];
   handleSelectionChange: (id: any[]) => void;
   setIsLoadingAction: React.Dispatch<SetStateAction<boolean>>;
@@ -42,7 +44,7 @@ export default function UserActionButtons({
       if (!token) return router.replace("/auth/login");
 
       const res = await blockUsers(token, usersSelected);
-      setUsers(res.data);
+      setUsers(usersDateAdapter(res.data));
       handleSelectionChange([]);
       setOpenActionStatusDialog(true);
       setDialogProps({
@@ -85,7 +87,7 @@ export default function UserActionButtons({
     if (token)
       unLockUsers(token, usersSelected)
         .then((res) => {
-          setUsers(res.data);
+          setUsers(usersDateAdapter(res.data));
           handleSelectionChange([]);
           setIsLoadingAction(false);
           setOpenActionStatusDialog(true);
@@ -136,7 +138,7 @@ export default function UserActionButtons({
             logOutUser();
             return;
           }
-          setUsers(res.data);
+          setUsers(usersDateAdapter(res.data));
           handleSelectionChange([]);
           setIsLoadingAction(false);
           setOpenActionStatusDialog(true);

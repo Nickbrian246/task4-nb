@@ -1,19 +1,20 @@
 "use client";
-import UsersTable from "@/components/table";
-import { Box } from "@mui/material";
-import UserActionButtons from "@/components/table/components/user-actions-buttons";
-import { getUsers } from "@/components/table/services";
-import { User } from "@prisma/client";
-import { useState, useEffect } from "react";
 import GridSkeleton from "@/components/skeletons/grid-skeleton";
-import DialogActionStatus from "@/components/table/components/user-actions-buttons/dialog-action-status";
-import { DialogProps } from "@/components/table/components/user-actions-buttons/dialog-action-status";
-import { useRouter } from "next/navigation";
-import { ApiFailureResponse } from "@/types/api";
+import UsersTable from "@/components/table";
+import UserActionButtons from "@/components/table/components/user-actions-buttons";
+import DialogActionStatus, {
+  DialogProps,
+} from "@/components/table/components/user-actions-buttons/dialog-action-status";
+import { getUsers } from "@/components/table/services";
 import { useGlobalWarningContext } from "@/hooks/global-warning-context/global-warning-context";
+import { ApiFailureResponse } from "@/types/api";
+import { localUser, usersDateAdapter } from "@/utils/date-adapter";
+import { Box } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<localUser[]>([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isFetchingUsers, setIsFetchingUsers] = useState<boolean>(true);
   const [isLoadingAction, setIsLoadingAction] = useState<boolean>(false);
@@ -34,7 +35,7 @@ export default function Home() {
     if (token)
       getUsers(token)
         .then((res) => {
-          setUsers(res.data);
+          setUsers(usersDateAdapter(res.data));
           setIsFetchingUsers(false);
         })
         .catch((err) => {

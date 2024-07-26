@@ -1,12 +1,10 @@
 "use client";
-import { Box } from "@mui/material";
+import { localUser } from "@/utils/date-adapter";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { User } from "@prisma/client";
-import DialogActionStatus from "./components/user-actions-buttons/dialog-action-status";
-import { colors, text } from "@/constants";
 
 interface Props {
-  users: User[];
+  users: localUser[];
   handleSelectionChange: (id: any) => void;
   selectedRows: any[];
   isLoadingAction: boolean;
