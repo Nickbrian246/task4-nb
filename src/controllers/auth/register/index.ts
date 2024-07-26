@@ -5,11 +5,13 @@ import { NextResponse } from "next/server";
 import prisma from "../../../../prisma";
 import { signJwt } from "@/lib/jose";
 
+const saltRounds = process.env.SALTROUNDS as string;
+
 export const register = async (req: Request): Promise<NextResponse> => {
   const userData = await req.json();
   const user = RegisterUserSchema.parse(userData);
 
-  const hashedPassword = await hash(user.password, 5);
+  const hashedPassword = await hash(user.password, Number(saltRounds));
 
   const createUser = await prisma.user.create({
     data: { ...user, password: hashedPassword },
