@@ -115,6 +115,11 @@ export default function UserActionButtons({
     if (token)
       deleteUsers(token, usersSelected)
         .then((res) => {
+          if (res.data.length === 0) {
+            activeGlobalWarning("Your account has been deleted.", "error");
+            logOutUser();
+            return;
+          }
           setUsers(res.data);
           handleSelectionChange([]);
           setIsLoadingAction(false);
