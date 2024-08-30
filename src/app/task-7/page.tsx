@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import React from "react";
 
 import {
@@ -16,6 +16,8 @@ import {
   VirtualizedMessageList,
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
+import { MyVideoCall } from "./_components/video-call";
+import CustomChannelHeader from "./_components/custom-channel-header";
 
 const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY as string;
 const userId = "nb-jm";
@@ -47,9 +49,10 @@ const App = () => {
           />
         </Box>
         <Box sx={{ flexGrow: "9" }}>
+          {/* <MyVideoCall /> */}
           <Channel>
             <Window>
-              <ChannelHeader />
+              <CustomChannelHeader />
               <MessageList />
               <MessageInput />
             </Window>
