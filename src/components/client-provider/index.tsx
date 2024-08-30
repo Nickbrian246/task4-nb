@@ -12,7 +12,7 @@ export default function ClientProvider({
     <AuthProvider>
       <GlobalWarningProvider>
         <section>
-          <Header />
+          {/* <Header /> */}
           {children}
         </section>
       </GlobalWarningProvider>
